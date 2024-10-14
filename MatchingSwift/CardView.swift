@@ -9,6 +9,7 @@ struct CardView: View {
     
     // カードの起点位置(ラッピング)
     @State private var offset: CGSize = .zero
+    let user: User
     
     var body: some View {
         ZStack(alignment: .bottom) {
@@ -23,6 +24,9 @@ struct CardView: View {
             
             // Information (プロフィール)
             informationLayer
+            
+            // LIKE and NOPE
+            LikeAndNope
             
         }
         .clipShape(RoundedRectangle(cornerRadius: 15))
@@ -41,7 +45,7 @@ struct CardView: View {
 extension CardView {
     
     private var imageLayer: some View {
-        Image("user01")
+        Image(user.photoUrl ?? "avatar")
             .resizable() // 画像の大きさ調整
             .aspectRatio(contentMode: .fill)
             .frame(width: 100) // 親要素のZ領域でくり抜きたい
@@ -50,10 +54,10 @@ extension CardView {
     private var informationLayer: some View {
         VStack(alignment: .leading) {
             HStack(alignment: .bottom) {
-                Text("ブルー")
+                Text(user.name)
                     .font(.largeTitle.bold())
                 
-                Text("99")
+                Text("\(user.age)")
                     .font(.title2)
                 
                 Image(systemName: "checkmark.seal.fill")
@@ -61,18 +65,62 @@ extension CardView {
                     .font(.title2)
                 
             }
-            Text("よろしくお願いします")
+            // メッセージ設定がない人は表示させない
+            if let message = user.message {
+                Text(message)
+            }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding()
         .foregroundStyle(.white)
         
     }
+    
+    private var LikeAndNope: some View {
+        HStack {
+            // LIKE
+            Text("LIKE")
+                .tracking(4)
+                .foregroundStyle(.green)
+                .font(.system(size: 50))
+                .fontWeight(.heavy)
+                .padding(.horizontal, 8)
+                .padding(.vertical, 2)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 10)
+                        .stroke(.green, lineWidth: 5)
+                )
+                .rotationEffect(Angle(degrees: -15))
+                .offset(x: 16, y: 30)
+                .opacity(opacity)
+            
+            Spacer()
+            
+            // NOPE
+            Text("NOPE")
+                .tracking(4)
+                .foregroundStyle(.red)
+                .font(.system(size: 50))
+                .fontWeight(.heavy)
+                .padding(.horizontal, 8)
+                .padding(.vertical, 2)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 10)
+                        .stroke(.red, lineWidth: 5)
+                )
+                .rotationEffect(Angle(degrees: 15))
+                .offset(x: -16, y: 36)
+                .opacity(-opacity)
+            
+        }
+        .frame(maxHeight: .infinity, alignment: .top)
+    }
 }
 
 // MARK: -Action
 extension CardView {
     
+    /* 移動量の制御 */
     private var screenWidth: CGFloat {
         guard let window = UIApplication.shared.connectedScenes.first as?
                 UIWindowScene else { return 0.0 }
@@ -80,15 +128,22 @@ extension CardView {
         return window.screen.bounds.width
     }
     
+    /* 移動割合の制御 */
     private var scale: CGFloat {
         // (水平方向の値/画面の横幅)
         // Max 0.75
         return max(1.0 - (abs(offset.width) / screenWidth), 0.75)
     }
     
+    /* 傾きの制御 */
     private var angle: Double {
         // (水平方向の値/画面の横幅)だと最大1度なので10をかける
         return (offset.width / screenWidth) * 10.0
+    }
+    
+    /* 透明度の制御 */
+    private var opacity: Double {
+        return (offset.width / screenWidth) * 4.0
     }
     
     private var gesture: some Gesture {
