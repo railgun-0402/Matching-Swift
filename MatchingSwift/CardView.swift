@@ -28,6 +28,8 @@ struct CardView: View {
         .clipShape(RoundedRectangle(cornerRadius: 15))
         .offset(offset)
         .gesture(gesture)
+        .scaleEffect(scale)
+        .rotationEffect(.degrees(angle))
     }
 }
 
@@ -71,30 +73,29 @@ extension CardView {
 // MARK: -Action
 extension CardView {
     
+    private var screenWidth: CGFloat {
+        guard let window = UIApplication.shared.connectedScenes.first as?
+                UIWindowScene else { return 0.0 }
+        // 画面幅を取得
+        return window.screen.bounds.width
+    }
+    
+    private var scale: CGFloat {
+        // (水平方向の値/画面の横幅)
+        // Max 0.75
+        return max(1.0 - (abs(offset.width) / screenWidth), 0.75)
+    }
+    
+    private var angle: Double {
+        // (水平方向の値/画面の横幅)だと最大1度なので10をかける
+        return (offset.width / screenWidth) * 10.0
+    }
+    
     private var gesture: some Gesture {
         DragGesture()
             .onChanged { value in
                 let moveWidth = value.translation.width
                 let moveHeight = value.translation.height
-                
-//                var limitedHeight: CGFloat = 0
-//                
-//                /*
-//                 * 垂直方向では-100〜100の範囲で動かす
-//                 */
-//                if (moveHeight > 0) {
-//                    if (moveHeight > 100) {
-//                        limitedHeight = 100
-//                    } else {
-//                        limitedHeight = moveHeight
-//                    }
-//                } else {
-//                    if (moveHeight < -100) {
-//                        limitedHeight = -100
-//                    } else {
-//                        limitedHeight = moveHeight
-//                    }
-//                }
 
                 /*
                  * 垂直方向では-100〜100の範囲で動かす
@@ -106,8 +107,19 @@ extension CardView {
                 
             }
             .onEnded { value in
-                withAnimation(.smooth) {
-                    offset = .zero
+                
+                let width = value.translation.width
+                let height = value.translation.height
+                
+                // 移動量が25%以上ある場合はカードを画面外へ
+                if (abs(width) > (screenWidth / 4)) {
+                    withAnimation(.smooth) {
+                        offset = CGSize(width: width > 0 ? screenWidth * 1.5 : -screenWidth * 1.5, height: height)
+                    }
+                } else {
+                    withAnimation(.smooth) {
+                        offset = .zero
+                    }
                 }
             }
     }
