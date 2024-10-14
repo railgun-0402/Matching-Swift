@@ -6,6 +6,10 @@
 import SwiftUI
 
 struct CardView: View {
+    
+    // カードの起点位置
+    private var offset: CGSize = .zero
+    
     var body: some View {
         ZStack(alignment: .bottom) {
             // Background
@@ -22,17 +26,18 @@ struct CardView: View {
             
         }
         .clipShape(RoundedRectangle(cornerRadius: 15))
+        .offset(offset)
     }
 }
 
 #Preview {
-    CardView()
+    ListView()
 }
 
 extension CardView {
     
     private var imageLayer: some View {
-        Image("avatar")
+        Image("user01")
             .resizable() // 画像の大きさ調整
             .aspectRatio(contentMode: .fill)
             .frame(width: 100) // 親要素のZ領域でくり抜きたい
@@ -47,8 +52,10 @@ extension CardView {
                 Text("99")
                     .font(.title2)
                 
-                Circle()
-                    .frame(width: 22, height: 22)
+                Image(systemName: "checkmark.seal.fill")
+                    .foregroundStyle(.white, .blue)
+                    .font(.title2)
+
             }
             Text("よろしくお願いします")
         }
