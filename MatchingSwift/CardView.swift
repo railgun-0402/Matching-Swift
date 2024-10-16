@@ -10,6 +10,7 @@ struct CardView: View {
     // カードの起点位置(ラッピング)
     @State private var offset: CGSize = .zero
     let user: User
+    let adjustIndex: (Bool) -> Void
     
     var body: some View {
         ZStack(alignment: .bottom) {
@@ -60,6 +61,20 @@ struct CardView: View {
             // 同じUserの際のみカードを外に出す
             if id == user.id {
                 removeCard(isLiked: true)
+            }
+        }
+        .onReceive(NotificationCenter.default.publisher(for: Notification.Name("REDOACTION"),
+                                                        object: nil)) { data in
+            print("ListViewModelからの通知を受信しました \(data)")
+            
+            guard
+                let info = data.userInfo,
+                let id = info["id"] as? String
+            else { return }
+            
+            // 同じUserの際のみカードを外に出す
+            if id == user.id {
+                resetCard()
             }
         }
     }
@@ -179,6 +194,16 @@ extension CardView {
         withAnimation(.smooth) {
             offset = CGSize(width: isLiked ? screenWidth * 1.5 : -screenWidth * 1.5, height: height)
         }
+        
+        adjustIndex(false)
+    }
+    
+    /* カードを1枚元に戻す */
+    private func resetCard() {
+        withAnimation(.smooth) {
+            offset = .zero
+        }
+        adjustIndex(true)
     }
     
     private var gesture: some Gesture {
@@ -205,9 +230,7 @@ extension CardView {
                 if (abs(width) > (screenWidth / 4)) {
                     removeCard(isLiked: width > 0, height: height)
                 } else {
-                    withAnimation(.smooth) {
-                        offset = .zero
-                    }
+                    resetCard()
                 }
             }
     }

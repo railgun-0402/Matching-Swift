@@ -32,7 +32,9 @@ extension ListView {
     private var cards: some View {
         ZStack {
             ForEach(viewModel.users.reversed()) { user in
-                CardView(user: user)
+                CardView(user: user) { isRedo in
+                    viewModel.adjustIndex(isRedo: isRedo)
+                }
             }
         }
     }
@@ -55,7 +57,7 @@ extension ListView {
 
             /* 矢印ボタン */
             Button {
-                print("ボタンがタップされました")
+                viewModel.redoButtonTapped()
             } label: {
                 Image(systemName: "arrow.counterclockwise")
                     .font(.system(size: 26, weight: .bold))

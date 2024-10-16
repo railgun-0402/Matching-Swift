@@ -29,6 +29,15 @@ class ListViewModel {
         ]
     }
     
+    /* Redoボタンかどうか判断する */
+    func adjustIndex(isRedo: Bool) {
+        if isRedo {
+            currentIndex -= 1
+        } else {
+            currentIndex += 1
+        }
+    }
+    
     /* ✖️ボタン押下時 */
     func nopeButtonTapped() {
         // 存在しない要素へのアクセスを防ぐ
@@ -38,10 +47,7 @@ class ListViewModel {
         NotificationCenter.default.post(name: Notification.Name("NOPEACTION"), object: nil, userInfo: [
             "id": users[currentIndex].id
         ])
-        
-        currentIndex += 1
     }
-    
     
     /* LIKEボタン押下時 */
     func likeButtonTapped() {
@@ -52,8 +58,16 @@ class ListViewModel {
         NotificationCenter.default.post(name: Notification.Name("LIKEACTION"), object: nil, userInfo: [
             "id": users[currentIndex].id
         ])
-        
-        currentIndex += 1
     }
-
+    
+    /* redoボタン押下時 */
+    func redoButtonTapped() {
+        // 存在しない要素へのアクセスを防ぐ
+        if currentIndex <= 0 { return }
+        
+        // 通知の送信
+        NotificationCenter.default.post(name: Notification.Name("REDOACTION"), object: nil, userInfo: [
+            "id": users[currentIndex - 1].id
+        ])
+    }
 }
