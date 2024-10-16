@@ -39,8 +39,9 @@ extension ListView {
     
     private var actions: some View {
         HStack(spacing: 68) {
+            /* 罰ボタン */
             Button {
-                print("ボタンがタップされました")
+                viewModel.nopeButtonTapped()
             } label: {
                 Image(systemName: "xmark")
                     .font(.system(size: 26, weight: .bold))
@@ -52,6 +53,7 @@ extension ListView {
                     }
             }
 
+            /* 矢印ボタン */
             Button {
                 print("ボタンがタップされました")
             } label: {
@@ -65,8 +67,9 @@ extension ListView {
                     }
             }
             
+            /* いいねボタン */
             Button {
-                print("ボタンがタップされました")
+                viewModel.likeButtonTapped()
             } label: {
                 Image(systemName: "heart")
                     .font(.system(size: 26, weight: .bold))

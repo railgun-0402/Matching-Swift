@@ -9,6 +9,8 @@ class ListViewModel {
     
     var users = [User]()
     
+    private var currentIndex = 0
+    
     /* initializer */
     init() {
         self.users = getMockUsers()
@@ -26,4 +28,32 @@ class ListViewModel {
             User.MOCK_USER7,
         ]
     }
+    
+    /* ✖️ボタン押下時 */
+    func nopeButtonTapped() {
+        // 存在しない要素へのアクセスを防ぐ
+        if currentIndex >= users.count { return }
+        
+        // 通知の送信
+        NotificationCenter.default.post(name: Notification.Name("NOPEACTION"), object: nil, userInfo: [
+            "id": users[currentIndex].id
+        ])
+        
+        currentIndex += 1
+    }
+    
+    
+    /* LIKEボタン押下時 */
+    func likeButtonTapped() {
+        // 存在しない要素へのアクセスを防ぐ
+        if currentIndex >= users.count { return }
+        
+        // 通知の送信
+        NotificationCenter.default.post(name: Notification.Name("LIKEACTION"), object: nil, userInfo: [
+            "id": users[currentIndex].id
+        ])
+        
+        currentIndex += 1
+    }
+
 }
