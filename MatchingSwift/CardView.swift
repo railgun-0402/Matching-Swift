@@ -34,6 +34,34 @@ struct CardView: View {
         .gesture(gesture)
         .scaleEffect(scale)
         .rotationEffect(.degrees(angle))
+        .onReceive(NotificationCenter.default.publisher(for: Notification.Name("NOPEACTION"),
+                                                        object: nil)) { data in
+            print("ListViewModelからの通知を受信しました \(data)")
+            
+            guard
+                let info = data.userInfo,
+                let id = info["id"] as? String
+            else { return }
+            
+            // 同じUserの際のみカードを外に出す
+            if id == user.id {
+                removeCard(isLiked: false)
+            }
+        }
+        .onReceive(NotificationCenter.default.publisher(for: Notification.Name("LIKEACTION"),
+                                                        object: nil)) { data in
+            print("ListViewModelからの通知を受信しました \(data)")
+            
+            guard
+                let info = data.userInfo,
+                let id = info["id"] as? String
+            else { return }
+            
+            // 同じUserの際のみカードを外に出す
+            if id == user.id {
+                removeCard(isLiked: true)
+            }
+        }
     }
 }
 
@@ -146,12 +174,19 @@ extension CardView {
         return (offset.width / screenWidth) * 4.0
     }
     
+    /* カードを左の外に出す */
+    private func removeCard(isLiked: Bool, height: CGFloat = 0.0) {
+        withAnimation(.smooth) {
+            offset = CGSize(width: isLiked ? screenWidth * 1.5 : -screenWidth * 1.5, height: height)
+        }
+    }
+    
     private var gesture: some Gesture {
         DragGesture()
             .onChanged { value in
                 let moveWidth = value.translation.width
                 let moveHeight = value.translation.height
-
+                
                 /*
                  * 垂直方向では-100〜100の範囲で動かす
                  */
@@ -168,9 +203,7 @@ extension CardView {
                 
                 // 移動量が25%以上ある場合はカードを画面外へ
                 if (abs(width) > (screenWidth / 4)) {
-                    withAnimation(.smooth) {
-                        offset = CGSize(width: width > 0 ? screenWidth * 1.5 : -screenWidth * 1.5, height: height)
-                    }
+                    removeCard(isLiked: width > 0, height: height)
                 } else {
                     withAnimation(.smooth) {
                         offset = .zero
