@@ -38,36 +38,21 @@ class ListViewModel {
         }
     }
     
-    /* ✖️ボタン押下時 */
-    func nopeButtonTapped() {
-        // 存在しない要素へのアクセスを防ぐ
-        if currentIndex >= users.count { return }
+    /* カード画面でボタンをタップ時処理 */
+    func tappedHandler(action: Action) {
+        switch action {
+            
+        case .nope, .like:
+            // 存在しない要素へのアクセスを防ぐ
+            if currentIndex >= users.count { return }
+        case .redo:
+            if currentIndex <= 0 { return }
+        }
         
         // 通知の送信
-        NotificationCenter.default.post(name: Notification.Name("NOPEACTION"), object: nil, userInfo: [
-            "id": users[currentIndex].id
-        ])
-    }
-    
-    /* LIKEボタン押下時 */
-    func likeButtonTapped() {
-        // 存在しない要素へのアクセスを防ぐ
-        if currentIndex >= users.count { return }
-        
-        // 通知の送信
-        NotificationCenter.default.post(name: Notification.Name("LIKEACTION"), object: nil, userInfo: [
-            "id": users[currentIndex].id
-        ])
-    }
-    
-    /* redoボタン押下時 */
-    func redoButtonTapped() {
-        // 存在しない要素へのアクセスを防ぐ
-        if currentIndex <= 0 { return }
-        
-        // 通知の送信
-        NotificationCenter.default.post(name: Notification.Name("REDOACTION"), object: nil, userInfo: [
-            "id": users[currentIndex - 1].id
+        NotificationCenter.default.post(name: Notification.Name("ACTIONFROMBUTTON"), object: nil, userInfo: [
+            "id": action == .redo ? users[currentIndex - 1].id : users[currentIndex].id,
+            "action": action
         ])
     }
 }

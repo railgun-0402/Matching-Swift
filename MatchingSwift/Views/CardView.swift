@@ -35,47 +35,9 @@ struct CardView: View {
         .gesture(gesture)
         .scaleEffect(scale)
         .rotationEffect(.degrees(angle))
-        .onReceive(NotificationCenter.default.publisher(for: Notification.Name("NOPEACTION"),
+        .onReceive(NotificationCenter.default.publisher(for: Notification.Name("ACTIONFROMBUTTON"),
                                                         object: nil)) { data in
-            print("ListViewModelからの通知を受信しました \(data)")
-            
-            guard
-                let info = data.userInfo,
-                let id = info["id"] as? String
-            else { return }
-            
-            // 同じUserの際のみカードを外に出す
-            if id == user.id {
-                removeCard(isLiked: false)
-            }
-        }
-        .onReceive(NotificationCenter.default.publisher(for: Notification.Name("LIKEACTION"),
-                                                        object: nil)) { data in
-            print("ListViewModelからの通知を受信しました \(data)")
-            
-            guard
-                let info = data.userInfo,
-                let id = info["id"] as? String
-            else { return }
-            
-            // 同じUserの際のみカードを外に出す
-            if id == user.id {
-                removeCard(isLiked: true)
-            }
-        }
-        .onReceive(NotificationCenter.default.publisher(for: Notification.Name("REDOACTION"),
-                                                        object: nil)) { data in
-            print("ListViewModelからの通知を受信しました \(data)")
-            
-            guard
-                let info = data.userInfo,
-                let id = info["id"] as? String
-            else { return }
-            
-            // 同じUserの際のみカードを外に出す
-            if id == user.id {
-                resetCard()
-            }
+            receiveHandler(data: data)
         }
     }
 }
@@ -123,38 +85,15 @@ extension CardView {
         HStack {
             // LIKE
             Text("LIKE")
-                .tracking(4)
-                .foregroundStyle(.green)
-                .font(.system(size: 50))
-                .fontWeight(.heavy)
-                .padding(.horizontal, 8)
-                .padding(.vertical, 2)
-                .overlay(
-                    RoundedRectangle(cornerRadius: 10)
-                        .stroke(.green, lineWidth: 5)
-                )
-                .rotationEffect(Angle(degrees: -15))
-                .offset(x: 16, y: 30)
+                .likeNopeText(isLike: true)
                 .opacity(opacity)
             
             Spacer()
             
             // NOPE
             Text("NOPE")
-                .tracking(4)
-                .foregroundStyle(.red)
-                .font(.system(size: 50))
-                .fontWeight(.heavy)
-                .padding(.horizontal, 8)
-                .padding(.vertical, 2)
-                .overlay(
-                    RoundedRectangle(cornerRadius: 10)
-                        .stroke(.red, lineWidth: 5)
-                )
-                .rotationEffect(Angle(degrees: 15))
-                .offset(x: -16, y: 36)
-                .opacity(-opacity)
-            
+                .likeNopeText(isLike: false)
+                .opacity(-opacity)            
         }
         .frame(maxHeight: .infinity, alignment: .top)
     }
@@ -233,5 +172,28 @@ extension CardView {
                     resetCard()
                 }
             }
+    }
+    
+    /* ボタン押下時の処理 */
+    private func receiveHandler(data: NotificationCenter.Publisher.Output) {
+        guard
+            let info = data.userInfo,
+            let id = info["id"] as? String,
+            let action = info["action"] as? Action
+        else { return }
+        
+        // 同じUserの際のみカードを外に出す
+        if id == user.id {
+            switch action {
+            // いいねとNoはカードを除外
+            case .nope:
+                removeCard(isLiked: false)
+            case .redo:
+                resetCard()
+            case .like:
+                removeCard(isLiked: true)
+            }
+            
+        }
     }
 }
