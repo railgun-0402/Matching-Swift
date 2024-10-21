@@ -11,7 +11,7 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		0BA24ADF2CB5A03D00E3A354 /* MatchingSwift */ = {
+		0B682D542CC5F935005FA9B4 /* MatchingSwift */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = MatchingSwift;
 			sourceTree = "<group>";
@@ -32,7 +32,7 @@
 		0BA24AD42CB5A03D00E3A354 = {
 			isa = PBXGroup;
 			children = (
-				0BA24ADF2CB5A03D00E3A354 /* MatchingSwift */,
+				0B682D542CC5F935005FA9B4 /* MatchingSwift */,
 				0BA24ADE2CB5A03D00E3A354 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -61,7 +61,7 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				0BA24ADF2CB5A03D00E3A354 /* MatchingSwift */,
+				0B682D542CC5F935005FA9B4 /* MatchingSwift */,
 			);
 			name = MatchingSwift;
 			packageProductDependencies = (
