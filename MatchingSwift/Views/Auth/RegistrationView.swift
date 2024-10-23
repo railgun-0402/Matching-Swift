@@ -20,32 +20,14 @@ struct RegistrationView: View {
         VStack {
             
             // Image
-            Image(systemName: "flame.circle.fill")
-                .resizable()
-                .scaledToFill()
-                .foregroundStyle(.red)
-                .frame(width: 120, height: 120)
-                .padding(.vertical, 32)
+            BrandImage()
             
             // Form
             VStack(spacing: 24) {
-                VStack(alignment: .leading, spacing: 12) {
-                    Text("メールアドレス")
-                        .foregroundColor(Color(.darkGray))
-                        .fontWeight(.semibold)
-                        .font(.footnote)
-                    TextField("入力してください", text: $email)
-                    Divider()
-                }
-                
-                VStack(alignment: .leading, spacing: 12) {
-                    Text("お名前")
-                        .foregroundColor(Color(.darkGray))
-                        .fontWeight(.semibold)
-                        .font(.footnote)
-                    TextField("入力してください", text: $username)
-                    Divider()
-                }
+                /* メールアドレス */
+                InputField(text: $email, label: "メールアドレス", placeholder: "入力してください")
+                /* 氏名 */
+                InputField(text: $username, label: "お名前", placeholder: "入力してください")                
                 
                 VStack(alignment: .leading, spacing: 12) {
                     HStack {
@@ -72,39 +54,15 @@ struct RegistrationView: View {
                     Divider()
                 }
                 
-                VStack(alignment: .leading, spacing: 12) {
-                    Text("パスワード")
-                        .foregroundColor(Color(.darkGray))
-                        .fontWeight(.semibold)
-                        .font(.footnote)
-                    SecureField("半角英数字6文字以上", text: $password)
-                    Divider()
-                }
+                /* パスワード */
+                InputField(text: $password, label: "パスワード", placeholder: "半角英数字6文字以上", isSecureField: true)
+                InputField(text: $confirmPassword, label: "パスワード(確認用)", placeholder: "もう一度、入力してください。", isSecureField: true)
                 
-                VStack(alignment: .leading, spacing: 12) {
-                    Text("パスワード(確認用)")
-                        .foregroundColor(Color(.darkGray))
-                        .fontWeight(.semibold)
-                        .font(.footnote)
-                    SecureField("もう一度、入力してください。", text: $confirmPassword)
-                    Divider()
-                }
             }
             
             // Button
-            Button {
-                print("ログインボタンがタップされました。")
-            } label: {
-                HStack {
-                    Text("登録")
-                    Image(systemName: "arrow.right")
-                }
-                .frame(maxWidth: .infinity)
-                .padding(.vertical, 16)
-                .fontWeight(.bold)
-                .foregroundColor(.white)
-                .background(Color.red)
-                .clipShape(Capsule())
+            BasicButton(label: "登録", icon: "arrow.right") {
+                print("登録ボタンがタップされました")
             }
             .padding(.top, 24)
             

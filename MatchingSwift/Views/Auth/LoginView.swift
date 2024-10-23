@@ -15,48 +15,19 @@ struct LoginView: View {
             VStack {
                 
                 // Image
-                Image(systemName: "flame.circle.fill")
-                    .resizable()
-                    .scaledToFill()
-                    .foregroundStyle(.red)
-                    .frame(width: 120, height: 120)
-                    .padding(.vertical, 32)
+                BrandImage()
                 
                 // Form
                 VStack(spacing: 24) {
-                    VStack(alignment: .leading, spacing: 12) {
-                        Text("メールアドレス")
-                            .foregroundColor(Color(.darkGray))
-                            .fontWeight(.semibold)
-                            .font(.footnote)
-                        TextField("入力してください", text: $email)
-                        Divider()
-                    }
-                    
-                    VStack(alignment: .leading, spacing: 12) {
-                        Text("パスワード")
-                            .foregroundColor(Color(.darkGray))
-                            .fontWeight(.semibold)
-                            .font(.footnote)
-                        SecureField("半角英数字6文字以上", text: $password)
-                        Divider()
-                    }
+                    /* メールアドレス */
+                    InputField(text: $email, label: "メールアドレス", placeholder: "入力してください")
+                    /* パスワード */
+                    InputField(text: $password, label: "パスワード", placeholder: "半角英数字6文字以上", isSecureField: true)
                 }
                 
                 // Button
-                Button {
-                    print("ログインボタンがタップされました。")
-                } label: {
-                    HStack {
-                        Text("ログイン")
-                        Image(systemName: "arrow.right")
-                    }
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 16)
-                    .fontWeight(.bold)
-                    .foregroundColor(.white)
-                    .background(Color.red)
-                    .clipShape(Capsule())
+                BasicButton(label: "ログイン", icon: "arrow.right") {
+                    print("ログインボタンがタップされました")
                 }
                 .padding(.top, 24)
                 
