@@ -7,6 +7,8 @@ import SwiftUI
 
 struct RegistrationView: View {
     
+    private let authViewModel = AuthViewModel()
+    
     @State private var email = ""
     @State private var age = 18
     @State private var username = ""
@@ -56,13 +58,13 @@ struct RegistrationView: View {
                 
                 /* パスワード */
                 InputField(text: $password, label: "パスワード", placeholder: "半角英数字6文字以上", isSecureField: true)
+                /* パスワード(確認用) */
                 InputField(text: $confirmPassword, label: "パスワード(確認用)", placeholder: "もう一度、入力してください。", isSecureField: true)
-                
             }
             
-            // Button
+            /* ユーザ登録 */
             BasicButton(label: "登録", icon: "arrow.right") {
-                print("登録ボタンがタップされました")
+                authViewModel.createAccount(email: email, password: password)
             }
             .padding(.top, 24)
             
