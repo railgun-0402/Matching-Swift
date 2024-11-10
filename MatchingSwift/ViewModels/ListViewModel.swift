@@ -40,7 +40,7 @@ class ListViewModel {
     
     /* カード画面でボタンをタップ時処理 */
     func tappedHandler(action: Action) {
-        switch action {
+        switch action {         
             
         case .nope, .like:
             // 存在しない要素へのアクセスを防ぐ
