@@ -4,16 +4,23 @@
 //
 
 import Foundation
+import FirebaseFirestore
 
-class ListViewModel {
+class ListViewModel: ObservableObject {
     
-    var users = [User]()
+    @Published var users = [User]()
     
     private var currentIndex = 0
     
     /* initializer */
+    @MainActor
     init() {
-        self.users = getMockUsers()
+        // self.users = getMockUsers()
+        
+        Task {
+            self.users = await fetchUsers()
+            print("self.users: \(self.users)")
+        }
     }
     
     /* Mockユーザーを取得 */
@@ -27,6 +34,25 @@ class ListViewModel {
             User.MOCK_USER6,
             User.MOCK_USER7,
         ]
+    }
+    
+    
+    /* Firebaseからユーザ情報取得 */
+    private func fetchUsers() async -> [User] {
+        do {
+            let snapshot = try await Firestore.firestore().collection("users").getDocuments()
+            var tempUsers = [User]()
+            
+            for document in snapshot.documents {
+                let user = try document.data(as: User.self)
+                tempUsers.append(user)
+            }
+            
+            return tempUsers
+        } catch {
+            print("ユーザーデータ取得失敗：\(error.localizedDescription)")
+            return []
+        }
     }
     
     /* Redoボタンかどうか判断する */

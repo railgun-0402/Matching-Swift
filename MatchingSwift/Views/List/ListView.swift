@@ -7,19 +7,30 @@ import SwiftUI
 
 struct ListView: View {
     
-    private let viewModel = ListViewModel()
+    @ObservedObject private var viewModel = ListViewModel()
     
     var body: some View {
-        VStack(spacing: 0) {
-            // Cards
-            cards
-            
-            // Actions(button)
-            actions
+        Group {
+            if viewModel.users.count > 0 {
+                VStack(spacing: 0) {
+                    // Cards
+                    cards
+                    
+                    // Actions(button)
+                    actions
 
+                }
+                .background(.black, in: RoundedRectangle(cornerRadius: 15))
+                .padding(.horizontal, 6) // 背景の下の角がくり抜かれる
+            } else {
+                ProgressView()
+                    .padding()
+                    .tint(Color.white)
+                    .background(Color.gray)
+                    .clipShape(RoundedRectangle(cornerRadius: 6))
+                    .scaleEffect(1.5)
+            }
         }
-        .background(.black, in: RoundedRectangle(cornerRadius: 15))
-        .padding(.horizontal, 6) // 背景の下の角がくり抜かれる
     }
 }
 
