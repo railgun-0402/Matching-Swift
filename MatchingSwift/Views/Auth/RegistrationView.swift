@@ -67,7 +67,12 @@ struct RegistrationView: View {
             BasicButton(label: "登録", icon: "arrow.right") {
                 // Taskで非同期処理の完了を待つ
                 Task {
-                    await authViewModel.createAccount(email: email, password: password)
+                    await authViewModel.createAccount(
+                        email: email,
+                        password: password,
+                        name: username,
+                        age: age
+                    )
                 }
             }
             .padding(.top, 24)

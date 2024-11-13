@@ -5,7 +5,7 @@
 
 import Foundation
 
-struct User: Identifiable {
+struct User: Identifiable, Codable {
     let id: String
     let name: String
     let email: String
