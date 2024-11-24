@@ -11,11 +11,16 @@ class AuthViewModel: ObservableObject {
     
     // userSessionが変更すると、通知を送る
     @Published var userSession: FirebaseAuth.User?
+    @Published var currentUser: User? // 非ログインケース用に、null許可
     
     init() {
         self.userSession = Auth.auth().currentUser
         // tmp comment
         print("ログインユーザー：\(self.userSession?.email)")
+        
+        Task {
+            await self.fetchCurrentUser()
+        }
     }
     
     // Login
@@ -75,6 +80,20 @@ class AuthViewModel: ObservableObject {
             print("データ保存成功")
         } catch {
             print("データ保存失敗：\(error.localizedDescription)")
+        }
+    }
+    
+    // Fetch Current User
+    @MainActor
+    private func fetchCurrentUser() async {
+        guard let uid = self.userSession?.uid else { return }
+        
+        do {
+            let snapshot = try await Firestore.firestore().collection("users").document(uid).getDocument()
+            self.currentUser = try snapshot.data(as: User.self)
+            print("カレントユーザー取得成功：\(self.currentUser)")
+        } catch {
+            print("カレントユーザー取得失敗：\(error.localizedDescription)")
         }
     }
 }
