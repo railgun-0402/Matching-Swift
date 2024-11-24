@@ -12,11 +12,12 @@ struct ContentView: View {
     var body: some View {
         Group {
             if authViewModel.userSession != nil {
-                ListView()
+                ListView()                    
             } else {
-                LoginView(authViewModel: authViewModel)
+                LoginView()
             }
         }
+        .environmentObject(authViewModel)
     }
 }
 
