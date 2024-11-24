@@ -64,11 +64,11 @@ extension MyPageView {
                     .clipShape(Circle())
                 
                 VStack (alignment: .leading, spacing: 4) {
-                    Text("ブルー")
+                    Text(authViewModel.currentUser?.name ?? "")
                         .font(.subheadline)
                         .fontWeight(.bold)
                     
-                    Text("blue@example.com")
+                    Text(authViewModel.currentUser?.email ?? "")
                         .font(.footnote)
                         .tint(.gray)
                 }
