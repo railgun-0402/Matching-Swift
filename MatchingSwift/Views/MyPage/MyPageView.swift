@@ -7,6 +7,7 @@ import SwiftUI
 
 struct MyPageView: View {
     
+    @EnvironmentObject var authViewModel: AuthViewModel
     @State private var showEditProfileView = false
     
     var body: some View {
@@ -29,7 +30,7 @@ struct MyPageView: View {
                 }
                 
                 Button {
-                    
+                    authViewModel.logout()
                 } label: {
                     MyPageRow(iconName: "arrow.left.circle.fill", label: "ログアウト", tintColor: .red, value: nil)
                 }
